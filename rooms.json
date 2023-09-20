@@ -1,0 +1,275 @@
+[
+  {
+    "title": "NHÀ NGUYÊN CĂN THÁI THỊ BÔI",
+    "price": 6,
+    "images": [
+      "https://nhatro.duytan.edu.vn//uploads/images/368159332_799012625240791_4091671799855748798_n.jpg"
+    ],
+    "des": [],
+    "utilities": [
+      "6 Người",
+      " Bãi đậu Xe máy",
+      " WiFi Miễn phí",
+      " Tivi",
+      " Điều hòa"
+    ],
+    "roomType": "Nhà Nguyên Căn",
+    "address": "THÁI THỊ BÔI, Thanh Khê, Đà Nẵng"
+  },
+  {
+    "title": "LƯ GIANG",
+    "price": 2,
+    "images": [],
+    "des": [],
+    "utilities": [
+      "1 Người",
+      " WiFi Miễn phí",
+      " Bãi đậu Xe máy",
+      " Camera an ninh"
+    ],
+    "roomType": "Nhà Trọ & Phòng Trọ",
+    "address": "đường lư giang, Hòa Xuân, Cẩm Lệ, Đà Nẵng"
+  },
+  {
+    "title": "PHÒNG TRỌ LƯU QUÝ KỲ",
+    "price": 2.5,
+    "images": [
+      "https://nhatro.duytan.edu.vn//uploads/files/a.jpg",
+      "https://nhatro.duytan.edu.vn//uploads/files/aa.jpg",
+      "https://nhatro.duytan.edu.vn//uploads/files/aaa.jpg"
+    ],
+    "des": [],
+    "utilities": [
+      "2 Người",
+      " Ban công",
+      " Sân phơi Quần áo",
+      " WiFi Miễn phí",
+      " Điều hòa"
+
+    ],
+    "roomType": "Nhà Trọ & Phòng Trọ",
+    "address": "47 Lưu Quý Kỳ, Hòa Cường Bắc, Hải Châu, Đà Nẵng"
+  },
+  {
+    "title": "PHÒNG TRỌ LÝ TỰ TRỌNG",
+    "price": 3,
+    "images": [
+      "https://nhatro.duytan.edu.vn//uploads/images/368149868_287769393952576_7085636466310167119_n.jpg"
+    ],
+    "des": [
+      "- Bếp chung",
+      "- Nhà vệ sinh riêng",
+      "- Tiện nghi cơ bản"
+    ],
+    "utilities": [
+      "2 Người",
+      " Bãi đậu Xe máy",
+      " Sân phơi Quần áo",
+      " Camera an ninh",
+      " WiFi Miễn phí",
+      " Điều hòa"
+    ],
+    "roomType": "Nhà Trọ & Phòng Trọ",
+    "address": "LÝ TỰ TRỌNG, Hải Châu, Đà Nẵng"
+  },
+  {
+    "title": "NHÀ NGUYÊN CĂN NÚI THÀNH",
+    "price": 6,
+    "images": [
+      "https://nhatro.duytan.edu.vn//uploads/images/368166293_659928459396974_4053765260109744751_n.jpg"
+    ],
+    "des": [
+      "- 3 phòng ngủ,2 nhà vệ sinh, 1 phòng khách, 1 phòng bếp",
+      "- Có nóng lạnh, bếp gas, hút mùi, tủ quần áo, bàn ghế,..."
+    ],
+    "utilities": [
+      "6 Người",
+      " Điều hòa",
+      " Bãi đậu Xe máy",
+      " Máy giặt"
+    ],
+    "roomType": "Nhà Nguyên Căn",
+    "address": "NÚI THÀNH, Hải Châu, Đà Nẵng"
+  },
+  {
+    "title": "96-98 HOÀNG MINH THẢO",
+    "price": 2.3,
+    "images": [],
+    "des": [],
+    "utilities": [
+      "1 Người",
+      " WiFi Miễn phí",
+      " Điều hòa",
+      " Bãi đậu Xe máy",
+      " Sân phơi Quần áo",
+      " Camera an ninh"
+    ],
+    "roomType": "Nhà Trọ & Phòng Trọ",
+    "address": "96-98 Hoàng Minh thảo, Hòa Minh, Liên Chiểu, Đà Nẵng"
+  },
+  {
+    "title": " TRỌ TÔN ĐẢN",
+    "price": 1.7,
+    "images": [
+      "https://nhatro.duytan.edu.vn//uploads/images/z4626762666366_130956189ca197f79aeb3bb9eedfd31f.jpg",
+      "https://nhatro.duytan.edu.vn//uploads/images/z4626762676851_ed9e9f2387f82057b31d21ad7fc8ba71.jpg"
+    ],
+    "des": [],
+    "utilities": [
+      "3 Người",
+      " WiFi Miễn phí",
+      " Ban công",
+      " Bãi đậu Xe máy",
+      " Thanh toán qua Thẻ",
+      " Camera an ninh"
+    ],
+    "roomType": "Nhà Trọ & Phòng Trọ",
+    "address": "428/45/7 Tôn Đản, Hòa An, Cẩm Lệ, Đà Nẵng"
+  },
+  {
+    "title": "TRỌ TÔ HIỆU",
+    "price": 0,
+    "images": [
+      "https://nhatro.duytan.edu.vn//uploads/images/z4635988003124_711ffb49b4697c9533b495ac61af46bf.jpg",
+      "https://nhatro.duytan.edu.vn//uploads/images/z4635988015132_3919088f35e7d9093eed4ff57e53bd9b.jpg",
+      "https://nhatro.duytan.edu.vn//uploads/images/z4635988022617_2384d145c71eacf0b480569fb005b678.jpg",
+      "https://nhatro.duytan.edu.vn//uploads/images/z4635988037113_d4db80704c3573e5ca097cecc2b6e0ac.jpg",
+      "https://nhatro.duytan.edu.vn//uploads/images/z4635988039812_83dbd22142891e00ccc2c408023bb338.jpg",
+      "https://nhatro.duytan.edu.vn//uploads/images/z4635988039812_83dbd22142891e00ccc2c408023bb338.jpg"
+    ],
+    "des": [
+      "Nội thất: Bàn ghế",
+      "\n<!--td {border: 1px solid #cccccc;}br {mso-data-placement:same-cell;}-->\n\nPhòng riêng tư, trong phòng có\nsẵn: gác lửng, kệ bếp, toilet\nriêng trong phòng...\nMiễn phí wifi, khu vực để xe,\nphơi đồ thoáng."
+    ],
+    "utilities": [
+      "4 Người",
+      " WiFi Miễn phí",
+      " Bãi đậu Xe máy",
+      " Thanh toán qua Thẻ",
+      " Sân phơi Quần áo",
+      " Quạt trần"
+    ],
+    "roomType": "Nhà Nguyên Căn",
+    "address": "36/02 Ngô Chân Lưu, Hòa Khánh Nam, Liên Chiểu, Đà Nẵng"
+  },
+  {
+    "title": " 1497 NGUYỄN TẤT THÀNH",
+    "price": 2.8,
+    "images": [
+      "https://nhatro.duytan.edu.vn//uploads/images/370537557_2102885300056150_1264330689993615663_n.jpg",
+      "https://nhatro.duytan.edu.vn//uploads/images/370569183_2102885353389478_7265399851785636177_n.jpg",
+      "https://nhatro.duytan.edu.vn//uploads/images/370573085_2102885336722813_3243728792377096469_n.jpg"
+    ],
+    "des": [
+      "Nằm ngay trục đường lớn, thuận tiện đi lại",
+      "Gần rất gần các trường CĐ, ĐH: ĐH THỂ DỤC THỂ THAO, CĐ FPT, CĐ THƯƠNG MẠI, ĐẠI HỌC SƯ PHẠM, ĐAỊ HỌC KỸ THUẬT",
+      "Sát bên chợ, khu ăn uống sinh viên sầm uất",
+      "Giá phòng:",
+      "Từ 2.800.000 cho phòng giường đơn ( ở được 2-3 bạn )",
+      "Tử 3.500.000 cho phòng 2 giường (4bạn)",
+      "Từ 4.500.000 cho phòng 3 giường (5-6 bạn)",
+      "View biển xịn xò, có máy giặt, sân phơi.",
+      "Hầm giữ xe rộng thoả mái. Có camera 24/24"
+    ],
+    "utilities": [
+      "1 Người",
+      " Điều hòa",
+      " Camera an ninh"
+    ],
+    "roomType": "Nhà Trọ & Phòng Trọ",
+    "address": "1497 NGUYỄN TẤT THÀNH, Thanh Khê Tây, Thanh Khê, Đà Nẵng"
+  },
+  {
+    "title": "463/21 TRƯNG NỮ VƯƠNG",
+    "price": 0,
+    "images": [],
+    "des": [],
+    "utilities": [
+      "1 Người",
+      " WiFi Miễn phí",
+      " Điều hòa"
+    ],
+    "roomType": "Nhà Trọ & Phòng Trọ",
+    "address": "463/21 Trưng Nữ Vương, Hòa Cường Nam, Hải Châu, Đà Nẵng"
+  },
+  {
+    "title": "HÀM MẶC TỬ",
+    "price": 2,
+    "images": [
+      "https://nhatro.duytan.edu.vn//uploads/files/14.jpg",
+      "https://nhatro.duytan.edu.vn//uploads/files/12.jpg"
+    ],
+    "des": [],
+    "utilities": [
+      "1 Người",
+      " WiFi Miễn phí",
+      " Điều hòa",
+      " Camera an ninh"
+    ],
+    "roomType": "Nhà Trọ & Phòng Trọ",
+    "address": "K8/11 Hàn Mặc Tử , Thuận Phước, Hải Châu, Đà Nẵng"
+  },
+  {
+    "title": "PHÒNG TRỌ QUÁCH THỊ TRANG",
+    "price": 2.5,
+    "images": [
+      "https://nhatro.duytan.edu.vn//uploads/files/b.jpg",
+      "https://nhatro.duytan.edu.vn//uploads/files/bb.jpg",
+      "https://nhatro.duytan.edu.vn//uploads/files/bbb.jpg",
+      "https://nhatro.duytan.edu.vn//uploads/files/bbbb.jpg"
+    ],
+    "des": [],
+    "utilities": [
+      "2 Người",
+      " Bãi đậu Xe máy",
+      " Sân phơi Quần áo",
+
+      " Điều hòa"
+    ],
+    "roomType": "Nhà Trọ & Phòng Trọ",
+    "address": "124 Quách Thị Trang , Hòa Xuân, Cẩm Lệ, Đà Nẵng"
+  },
+  {
+    "title": "TRỌ TÔ HIỆU",
+    "price": 0,
+    "images": [
+      "https://nhatro.duytan.edu.vn//uploads/images/z4635988003124_711ffb49b4697c9533b495ac61af46bf.jpg",
+      "https://nhatro.duytan.edu.vn//uploads/images/z4635988015132_3919088f35e7d9093eed4ff57e53bd9b.jpg",
+      "https://nhatro.duytan.edu.vn//uploads/images/z4635988022617_2384d145c71eacf0b480569fb005b678.jpg",
+      "https://nhatro.duytan.edu.vn//uploads/images/z4635988037113_d4db80704c3573e5ca097cecc2b6e0ac.jpg",
+      "https://nhatro.duytan.edu.vn//uploads/images/z4635988039812_83dbd22142891e00ccc2c408023bb338.jpg",
+      "https://nhatro.duytan.edu.vn//uploads/images/z4635988039812_83dbd22142891e00ccc2c408023bb338.jpg"
+    ],
+    "des": [
+      "Nội thất: Bàn ghế",
+      "\n<!--td {border: 1px solid #cccccc;}br {mso-data-placement:same-cell;}-->\n\nPhòng riêng tư, trong phòng có\nsẵn: gác lửng, kệ bếp, toilet\nriêng trong phòng...\nMiễn phí wifi, khu vực để xe,\nphơi đồ thoáng."
+    ],
+    "utilities": [
+      "4 Người",
+      " WiFi Miễn phí",
+      " Bãi đậu Xe máy",
+      " Thanh toán qua Thẻ",
+      " Sân phơi Quần áo",
+      " Quạt trần"
+    ],
+    "roomType": "Nhà Nguyên Căn",
+    "address": "36/02 Ngô Chân Lưu, Hòa Khánh Nam, Liên Chiểu, Đà Nẵng"
+  },
+  {
+    "title": "NHÀ NGUYÊN CĂN BÀU TRẢNG",
+    "price": 5.5,
+    "images": [
+      "https://nhatro.duytan.edu.vn//uploads/images/368041877_285170530820323_8428168339065361744_n.jpg"
+    ],
+    "des": [],
+    "utilities": [
+      "6 Người",
+      " WiFi Miễn phí",
+      " Tivi",
+      " WiFi Miễn phí",
+      " Điều hòa"
+    ],
+    "roomType": "Nhà Nguyên Căn",
+    "address": "BÀU TRẢNG, Thanh Khê, Đà Nẵng"
+  }
+]
