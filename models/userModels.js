@@ -1,60 +1,57 @@
 import mongoose from "mongoose";
 
 const userModel = new mongoose.Schema({
-    userName : {
-        type : String,
-        require : true,
+  userName: {
+    type: String,
+    require: true,
+  },
+  uid: {
+    type: String,
+    require: true,
+    uinque: true,
+  },
+  avatar: {
+    type: String,
+  },
+  address: {
+    type: String,
+  },
+  phoneNumber: {
+    type: String,
+  },
+  roomfavorites: [{ type: mongoose.Schema.Types.ObjectId, ref: "Home" }],
+  cID: {
+    fullName: {
+      type: String,
     },
-    uid : {
-        type : String,
-        require : true
+    no: {
+      type: String,
     },
-    avatar : {
-        type : String,
+    image: {
+      type: String,
     },
-    address : {
-        type : String,
+    sex: {
+      type: String,
+      enum: ["nam", "nu"],
+      default: "nam",
     },
-    phoneNumber : {
-        type : String,
+    placeOfOrigin: {
+      type: String,
     },
-    roomfavorites : {
-        type : [String]
+    dateOfBirth: {
+      type: Date,
     },
-    cID: {
-        fullName : {
-            type : String,
-        },
-        no : {
-            type : String,
-        },
-        image : {
-            type : String,
-        },
-        sex : {
-            type : String,
-            enum : ['nam','nu'],
-            default : 'nam'
-        },
-        placeOfOrigin : {
-            type : String,
-            
-        },
-        dateOfBirth : {
-            type : Date,
-        },
-        placeOfResidence: {
-            type : String,
-        }
+    placeOfResidence: {
+      type: String,
     },
-    roles : {
-        type : String,
-        enum : ['user','admin','host'],
-        default : 'user',
-    }
-})
+  },
+  roles: {
+    type: String,
+    enum: ["user", "admin", "host"],
+    default: "user",
+  },
+});
 
-const UserModel = mongoose.model('User',userModel);
-
+const UserModel = mongoose.model("User", userModel);
 
 export default UserModel;
