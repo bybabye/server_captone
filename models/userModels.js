@@ -26,7 +26,11 @@ const userModel = new mongoose.Schema({
     },
     no: {
       type: String,
+      unique : true,
+      sparse: true, // cho phep ghi vao la null nhung khong bi trung lap
+      required : false,
     },
+    
     image: {
       type: String,
     },

@@ -7,12 +7,14 @@ import axios from "axios";
 import cheerio from "cheerio";
 import "dotenv/config.js";
 import { getAuth } from "firebase-admin/auth";
-import "./firebaseConfig.js";
+
 import OpenRouter from "./routers/OpenRouter.js";
 import HomeRouter from "./routers/HomeRouter.js";
 import fs from "fs";
 
 import UserRouter from "./routers/UserRouter.js";
+import ChatRouter from "./routers/ChatRouter.js";
+import { adminApp } from "./firebaseConfig.js";
 // Kết nối MongoDB bằng URI được đặt trong tệp .env
 const URI = `mongodb+srv://luxi291000:${process.env.DB_PASSWORD}@cluster0.i92x06q.mongodb.net/?retryWrites=true&w=majority`;
 const URL = `https://nhatro.duytan.edu.vn/nha-tro/tim-phong-tro/phong-tro-/416?page=2&geoid1=33`;
@@ -27,7 +29,7 @@ const authorizationJWT = async (req, res, next) => {
   
   if (authorizationHeader) {
     const accessToken = authorizationHeader.split(" ")[1];
-    getAuth()
+    getAuth(adminApp)
       .verifyIdToken(accessToken)
       .then((decodedToken) => {
         res.locals.uid = decodedToken.uid;
@@ -54,6 +56,7 @@ const authorizationJWT = async (req, res, next) => {
 app.use(cors(), bodyParser.json());
 app.use("/", OpenRouter);
 app.use("/",authorizationJWT)
+app.use("/", ChatRouter);
 app.use("/", UserRouter);
 app.use("/", HomeRouter);
 
