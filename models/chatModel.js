@@ -3,11 +3,7 @@ import mongoose from "mongoose";
 
 
 const chatModel = new mongoose.Schema({
-    chatId : {
-        type : String ,
-        unique : true,
-        require : true
-    },
+
     type : {
         type : String,
         enum : ['gruop','private'],
@@ -16,7 +12,8 @@ const chatModel = new mongoose.Schema({
     membersId : [{
         type : mongoose.Schema.Types.ObjectId,
         ref : 'User'
-    }]
+    }],
+   
 },{timestamps : true})
 
 

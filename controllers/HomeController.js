@@ -1,12 +1,13 @@
 import HomeModel from "../models/homeModels.js";
 import fs from "fs";
 import UserModel from "../models/userModels.js";
+import CommentModel from "../models/commentModel.js";
 
+// thêm nhà từ chủ căn hộ
 export const addHome = async (req, res) => {
-  const uid = res.locals.uid;
-  const { address, price, des, images, status, roomArea, ownerId } = req.body;
-
   try {
+    const uid = res.locals.uid;
+    const { address, price, des, images, status, roomArea, ownerId } = req.body;
     const user = await UserModel.findOne({ uid });
     if (user.roles !== "host") {
       return res
@@ -30,7 +31,11 @@ export const addHome = async (req, res) => {
     return res.status(500).send({ message: "Internal server error" });
   }
 };
+/*
+Tìm kiếm danh sách home.
+query : page // trang đang ở hiệN tại
 
+*/
 export const listHome = async (req, res) => {
   try {
     // lấy giá trị của trang từ param . Mặc định page = 1
@@ -38,12 +43,14 @@ export const listHome = async (req, res) => {
     const homeSize = 12; // giới hạn số bản ghi cần phải lấy
 
     const skipCount = (page - 1) * homeSize; // tính số bản khi cần bỏ qua;
-    const data = await HomeModel.find()
+    const data = await HomeModel.find({
+      status : true
+    })
       .populate({
         path: "ownerId",
       })
       .skip(skipCount)
-      .limit(homeSize);
+      .limit(homeSize); //12 
 
     return res.status(200).send(data);
   } catch (error) {
@@ -51,28 +58,51 @@ export const listHome = async (req, res) => {
     return res.status(500).send({ message: "Internal server error" });
   }
 };
+/*
+Tìm kiếm home từ id home
 
+*/
 export const homeForId = async (req, res) => {
-  const postId = req.query.postId;
   try {
-    const post = await HomeModel.findById(postId).populate({
+    const postId = req.query.postId;
+    const home = await HomeModel.findById(postId).populate({
       path: "ownerId",
       // select neu co
     });
-    if (!post) {
+  // home Id
+  // review => 
+    const comments = await CommentModel.find({homeId : home._id}).populate({path: "authorId"}) ?? [];
+    const data = {
+      address: home.address,
+      _id: home._id,
+      price: home.price,
+      utilities: home.utilities,
+      roomType: home.roomType,
+      des: home.des,
+      images: home.images,
+      status: home.status,
+      ownerId: home.ownerId,
+      comments: comments,
+      __v: home.__v,
+      currentTenant: home.currentTenant,
+    };
+    if (!home) {
       return res.status(404).send({ message: "Post not found" });
     }
-    return res.status(200).send(post);
+    return res.status(200).send(data);
   } catch (error) {
     console.log(error);
     return res.status(500).send({ message: "Internal server error" });
   }
 };
+/*
+Tìm kiếm home từ địa chỉ
+địa chỉ tìm kiếm là quận,phường,thành phố
 
+*/
 export const searchHomeForAddress = async (req, res) => {
-  const { subDistrict, district, city } = req.query;
-  console.log(subDistrict, district, city);
   try {
+    const { subDistrict, district, city } = req.query;
     const query = {};
 
     // Thêm điều kiện tìm kiếm cho subDistrict nếu có giá trị
@@ -88,28 +118,28 @@ export const searchHomeForAddress = async (req, res) => {
     return res.status(500).send({ message: "Internal server error" });
   }
 };
+/*
+Xoá bài viết muốn cho thuê nhà
+Chỉ được xoá từ chủ căn nhà. 
 
+*/
 export const deleteHome = async (req, res) => {
-  // lấy id người dùng
-  const uid = res.locals.uid;
-  // lấy id từ post để xoá
-  const postId = res.body.postId;
   try {
+    // lấy id người dùng
+    const uid = res.locals.uid;
+    // lấy id từ post để xoá
+    const postId = res.params.postId;
     const user = await UserModel.findOne({ uid });
-    if (!user) {
-      return res
-        .status(404)
-        .send({ message: "Home not found or does not belong to the user" });
-    }
     const home = await HomeModel.findOne({
       _id: postId,
       ownerId: user.uid,
     });
-    if (!home) {
+    if (!user || !home) {
       return res
         .status(404)
         .send({ message: "Home not found or does not belong to the user" });
     }
+    
     // Nếu bài đăng tồn tại và thuộc về người dùng, thì xóa nó
     await home.remove();
     return res.status(200).send({ message: "Home deleted successfully" });
@@ -119,64 +149,78 @@ export const deleteHome = async (req, res) => {
   }
 };
 
-export const addQuickLy = async (req, res) => {
+/*
+thêm người đang thuê . 
+Chỉ được thêm từ chủ căn nhà. 
+Và chuyển trạng thái của căn nhà từ còn phòng thành trống phòng
+*/
+
+export const updateTenant = async (req, res) => {
   try {
-    fs.readFile("rooms.json", "utf8", async (err, data) => {
-      if (err) {
-        console.error("There was an error reading the file:", err);
-        res.status(500).json({ error: "Internal server error" });
-        return;
-      }
-
-      // Parse the JSON data from the file
-      const jsonData = JSON.parse(data);
-
-      const dt = jsonData.map((room) => {
-        const address = {
-          stress: "",
-          subDistrict: "",
-          district: "",
-          city: "",
-        };
-        const arr = room.address.split(",");
-        if (arr.length === 2) {
-          address.stress = arr[0].trim();
-          address.city = arr[1].trim();
-        } else if (arr.length === 3) {
-          address.stress = arr[0].trim();
-          address.district = arr[1].trim();
-          address.city = arr[2].trim();
-        } else if (arr.length === 4) {
-          address.stress = arr[0].trim();
-          address.subDistrict = arr[1].trim();
-          address.district = arr[2].trim();
-          address.city = arr[3].trim();
-        } else if (arr.length === 5) {
-          address.stress = arr[0].trim();
-          address.subDistrict = arr[2].trim();
-          address.district = arr[3].trim();
-          address.city = arr[4].trim();
-        } else {
-          address.city = arr[0].trim();
-        }
-        return {
-          ...room,
-          address: address,
-        };
-      });
-      for (let i = 0; i < dt.length; i++) {
-        const newHome = new HomeModel({
-          ...dt[i],
-          ownerId: "64fad036c7a97114a7c9cac5",
-        });
-        await newHome.save();
-      }
-      // Extract links from jsonData
-
-      res.status(200).send(dt);
+    const postId = req.query.postId;
+    const uid = res.locals.uid;
+    const user = await UserModel.findOne({ uid });
+    const currentTenant = req.query.currentTenant;
+    const home = await HomeModel.findOne({
+      _id: postId,
+      ownerId: user._id,
     });
+    if (home) {
+      // nếu id có trong người từng thuê không có add nữa
+      await home.updateOne(
+        {
+          $set: {
+            currentTenant: currentTenant,
+            status: false,
+          },
+        },
+        { new: true } // Trả về tài liệu sau khi đã cập nhật
+      );
+      return res.status(200).send({ message: "Home update Tenant successfully" });
+    } else {
+      return res.status(404).send({ message: "Home Not Found" });
+    }
   } catch (error) {
     console.log(error);
-    res.status(500).send("Error saving home");
+    return res.status(500).send({ message: "Internal server error" });
   }
 };
+/*
+gỡ người đã thuê và chuyển trạng thái còn phòng
+Chỉ được update từ chủ căn nhà. 
+
+*/
+
+export const removeCurrentTenant = async (req, res) => {
+  try {
+    const postId = req.query.postId;
+    const uid = res.locals.uid;
+    const user = await UserModel.findOne({ uid });
+
+    const home = await HomeModel.findOne({
+      _id: postId,
+      ownerId: user._id,
+    });
+    if (home) {
+      await home.updateOne(
+        {
+          $set: {
+            currentTenant: null,
+            status: true,
+          },
+        },
+        { new: true } // Trả về tài liệu sau khi đã cập nhật
+      );
+      return res
+        .status(200)
+        .send({ message: "Home current tenant update successfully" });
+    } else {
+      return res.status(404).send({ message: "Home Not Found" });
+    }
+  } catch (error) {
+    console.log(error);
+    return res.status(500).send({ message: "Internal server error" });
+  }
+};
+
+//

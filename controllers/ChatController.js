@@ -1,156 +1,161 @@
-import { db } from "../firebaseConfig.js";
-import { v4 as uuidv4 } from "uuid";
+
 import UserModel from "../models/userModels.js";
-import {format} from 'date-fns';
-
+import ChatModel from "../models/chatModel.js";
+import mongoose from "mongoose";
+import MessageModel from "../models/messageModel.js";
+import { format } from "date-fns"; 
+//
 export const addChat = async (req, res) => {
-  const { memberId, type } = req.body;
-  console.log("dang xai add");
+  const { senderId } = req.body;
   const uid = res.locals.uid;
-  const yUser = await UserModel.findOne({ uid: memberId });
-  const typeChat = {
-    gruop: "gruop",
-    private: "private",
-  };
-  if (!(type in typeChat)) {
-    return res.status(404).send({ message: "Add chat error for type " });
-  }
   try {
-    const querySnapshot = await db
-      .collection("chats")
-      .where("members", "array-contains-any", [memberId, uid])
-
-      .get();
-
-    if (!querySnapshot.empty) {
+    // Bước 1: Tìm người dùng bạn muốn trò chuyện với
+    // xài promise all để thực hiện cùng lúc 2 hàm bất đồng bộ dưới
+    const [myUser, yUser] = await Promise.all([
+      UserModel.findOne({ uid: uid }),
+      UserModel.findOne({ uid: senderId }),
+    ]);
+    if (!myUser || !yUser) {
+      return res.status(404).send({ message: "User not found" });
+    }
+    const myUserId = new mongoose.Types.ObjectId(myUser._id);
+    const yUserId = new mongoose.Types.ObjectId(yUser._id);
+    // Bước 2: Kiểm tra xem cuộc trò chuyện với cả hai thành viên đã tồn tại chưa
+    const chat = await ChatModel.findOne({
+      membersId: {
+        $exists: true,
+        $all: [myUserId, yUserId],
+      },
+    }).populate('membersId','userName avatar uid');
+    if (chat) {
       // Nếu tìm thấy cuộc trò chuyện chứa cả hai memberId
       // Trả về chatId của cuộc trò chuyện đầu tiên tìm thấy
+     
       return res.status(200).send({
         message: "Chat already exists ",
-        chatId: querySnapshot.docs[0].data().chatId,
-        data: {
-          yid: yUser.uid,
-          avatar: yUser.avatar,
-          userName: yUser.userName,
-        },
-      });
-    } else {
-      const chatId = uuidv4();
-      const data = {
-        chatId,
-        type: type,
-        members: [memberId, uid],
-      };
-      const response = await db.collection("chats").doc(chatId).set(data);
-
-      console.log(response);
-      return res
-        .status(200)
-        .send({
-          message: "Chat created successfully ",
-          chatId,
-          data: {
-            yid: yUser.uid,
-            avatar: yUser.avatar,
-            userName: yUser.userName,
-          },
-        });
-    }
-  } catch (error) {
-    console.log(error);
-    return res.status(500).send({ message: "Internal server error" });
-  }
-};
-
-export const getChat = async (req, res) => {
-  const chatId = req.query.chatId;
-  try {
-    const doc = await db.collection("chats").doc(chatId).get();
-    if (!doc.exists) {
-      return res.status(500).send({ message: "No Chat for database" });
-    } else {
-      return res.status(200).send(doc.data());
-    }
-  } catch (error) {
-    console.log(error);
-    return res.status(500).send({ message: "Internal server error" });
-  }
-};
-
-export const sendMessages = async (req, res) => {
-  const chatId = req.query.chatId;
-  const { senderId, type, content } = req.body;
-  console.log(senderId, type, content, chatId);
-  const currentDate = new Date();
-  try {
-    const typeMessages = {
-      text: "text",
-      image: "image",
-      video: "video",
-      voice: "voice",
-    };
-    if (!(type in typeMessages)) {
-      return res.status(404).send({ message: "Send mess error" });
-    }
-    const data = {
-      chatId,
-      mid : uuidv4(),
-      type,
-      content,
-      senderId,
-      sendTime: currentDate,
-    };
-    const response = await db
-      .collection("chats")
-      .doc(chatId)
-      .collection("messages")
-      .doc(uuidv4())
-      .set(data);
-    console.log(response);
-    return res.status(200).send("Message created successfully");
-  } catch (error) {
-    console.log(error);
-    return res.status(500).send({ message: "Internal server error" });
-  }
-};
-let unsubscribe;
-export const getMessagesForChatId = async (req, res) => {
-  const chatId = req.query.chatId;
-  console.log(chatId);
-  let hasSentResponse = false;
-  try {
-    const messages = [];
-     unsubscribe = db
-      .collection("chats")
-      .doc(chatId)
-      .collection("messages")
-      .orderBy("sendTime", "desc")
-      .onSnapshot((querySnapshot) => {
-        querySnapshot.docChanges().map((change) => {
-          const messageData = change.doc.data();
-          const formattedSendTime = format(messageData.sendTime.toDate(), "PPPPp"); // Sử dụng định dạng bạn muốn ở đây
-         
-          messages.push({...messageData, sendTime: formattedSendTime });
-        });
-        // Kiểm tra xem đã gửi phản hồi chưa
-        if (!hasSentResponse) {
-          // Gửi phản hồi khi có thay đổi và đánh dấu đã gửi
-          console.log(messages);
-          res.status(200).send(messages);
-          hasSentResponse = true;
-        }
+        data: chat,
       });
       
+    } else {
+      const newChat = new ChatModel({
+        membersId: [myUserId, yUserId],
+      });
+      await newChat.save();
+      // Nạp thông tin thành viên của cuộc trò chuyện bằng populate
+      const chat = await ChatModel.findById(newChat._id).populate('membersId','userName avatar uid');
+     
+      return res.status(201).send({
+        message: "Chat created successfully",
+        data: chat,
+      });
+    }
   } catch (error) {
+    console.log(error);
     return res.status(500).send({ message: "Internal server error" });
   }
 };
 
-const unsubscribeFromChat = () => {
-  if (unsubscribe) {
-    unsubscribe(); // Gọi hàm unsubscribe để ngắt kết nối với Firestore
-    console.log("Unsubscribed from chat.");
-  } else {
-    console.log("No active subscription to unsubscribe from.");
+export const deleteMessage = async (req,res) => {
+  try {
+    
+    const uid = res.locals.uid;
+    const messId = req.query.messId;
+    const chatId = req.query.chatId;
+    
+    const user = await UserModel.findOne({uid});
+    
+    if (!user) {
+      return res.status(404).send({ message: "User not found" });
+    }
+    console.log(user._id);
+    const message = await MessageModel.findOne({
+      _id : messId,
+      chatId : chatId,
+      senderId : user._id
+    })
+    console.log(message);
+    if(message) {
+      return res.status(200).send({ message: "Message deteled successfully" });
+    }else{
+      return res.status(404).send({ message: "You do not have permission to delete this message" });
+    }
+  } catch (error) {
+    console.log("Lỗi ở delete message" + error);
+    return res.status(500).send({ message: "Internal server error" });
   }
-};
+}
+
+
+export const getListChat = async (req,res) => {
+  try {
+    const uid = res.locals.uid;
+    // lấy user từ database
+    const user = await UserModel.findOne({uid}) 
+    const myUserId = new mongoose.Types.ObjectId(user._id);
+    // tìm tất cả các list chat trong database có chứa uid trong membersId . Nâng thêm vào private nếu sau này có gruop
+    const chats = await ChatModel.find({
+      membersId : {$in : [myUserId]}
+    }).populate('membersId','userName avatar uid');
+    // Lọc ra các cuộc trò chuyện chưa bị xoá bởi người dùng hiện tại
+    
+    console.log(chats);
+    return res.status(200).send({
+      message: "List of chats retrieved successfully",
+      data: chats,
+    });
+  } catch (error) {
+    console.log(`Lỗi ở hàm get List chat ${error}`);
+    return res.status(500).send({ message: "Internal server error" });
+  }
+}
+
+
+
+// phải kiểm tra người nhắn có phải là người trong chat hay không?
+export const sendMessages = async (req,res) => {
+  try {
+    const {type,content} = req.body;
+    const chatId = req.query.chatId;
+    const uid = res.locals.uid;
+    console.log(chatId,type,content);
+    const user = await UserModel.findOne({uid})
+    const mChatId = new mongoose.Types.ObjectId(chatId);
+    const newMessage = new MessageModel({
+      senderId : user._id,
+      chatId : mChatId ,
+      content,
+      type,
+      sentTime : Date()
+    })
+    await newMessage.save();
+    return res.status(201).send({
+      message: "Message created successfully",
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).send({ message: "Internal server error" });
+  }
+}
+
+// đặt cờ kiểm tra xem uid có trong mess này hay không.
+export const getListMessages = async (req,res) => {
+  try {
+    const chatId = req.query.chatId;
+    const mChatId = new mongoose.Types.ObjectId(chatId);
+
+    const data = await MessageModel.find({
+      chatId : mChatId
+    });
+    const formattedData = data.map(message => {
+      const customFormattedTime = format(new Date(message.sentTime), "dd/MM/yyyy HH:mm:ss");
+      return { ...message.toObject(), sentTime: customFormattedTime };
+    });
+    return res.status(200).send({
+      message: "List of messages retrieved successfully",
+      data : formattedData
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).send({ message: "Internal server error" });
+  }
+}

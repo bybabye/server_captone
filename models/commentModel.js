@@ -3,14 +3,18 @@
 import mongoose from "mongoose";
 
 const commentModel = new mongoose.Schema({
-    text : {
+    content : {
         type : String,
         require : true,
     },
-    
-    author : {
+    homeId : {
+        type : mongoose.Schema.Types.ObjectId,
+        ref : 'Home'
+    },
+    authorId : {
         type : mongoose.Schema.Types.ObjectId,
         ref : 'User',
+        require : true
     }
 })
 
@@ -18,3 +22,5 @@ const CommentModel = mongoose.model('Comment',commentModel);
 
 
 export default CommentModel;
+
+

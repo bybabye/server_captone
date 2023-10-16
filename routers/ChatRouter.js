@@ -1,7 +1,7 @@
 import express from "express";
 
 
-import { addChat, getChat, getMessagesForChatId, sendMessages } from "../controllers/ChatController.js";
+import { addChat, deleteMessage, getListChat, getListMessages, sendMessages  } from "../controllers/ChatController.js";
 
 
 
@@ -10,8 +10,9 @@ import { addChat, getChat, getMessagesForChatId, sendMessages } from "../control
 const ChatRouter = express.Router(); 
 
 ChatRouter.post('/chat/add',addChat);
-ChatRouter.get('/chat',getChat)
-ChatRouter.post('/chat/messages/send',sendMessages);
-ChatRouter.get('/chat/messages',getMessagesForChatId)
+ChatRouter.get('/chat/list',getListChat);
+ChatRouter.post('/chat/message/send',sendMessages);
+ChatRouter.get('/chat/message/list',getListMessages);
+ChatRouter.delete('/chat/delete',deleteMessage);
 // HomeRouter.get('/home/add/quickly',addQuickLy);
 export default ChatRouter;

@@ -8,7 +8,7 @@ const userModel = new mongoose.Schema({
   uid: {
     type: String,
     require: true,
-    uinque: true,
+    unique: true,
   },
   avatar: {
     type: String,
@@ -19,7 +19,6 @@ const userModel = new mongoose.Schema({
   phoneNumber: {
     type: String,
   },
-  roomfavorites: [{ type: mongoose.Schema.Types.ObjectId, ref: "Home" }],
   cID: {
     fullName: {
       type: String,

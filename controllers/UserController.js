@@ -1,33 +1,32 @@
 import UserModel from "../models/userModels.js";
 
 export const addUser = async (req, res) => {
-  const { userName,uid,cmnd,avatar } = req.body;
+  const { userName, uid, cmnd, avatar } = req.body;
   try {
-    console.log(userName,uid);
+    console.log(userName, uid);
 
-
-    if(uid == null ){
-      return res.status(500).send({message : "Error user"});
-    
+    if (uid == null) {
+      return res.status(400).send({ message: "Your information is invalid" });
     }
-    const user = await UserModel.findOne({uid});
-    if(user) {
+    const user = await UserModel.findOne({ uid }); 
+    if (user) {
       console.log("The user is already in the database");
-      return res.status(201).send({message : "The user is already in the database"});
+      return res
+        .status(200)
+        .send({ message: "The user is already in the database",data: user });
     }
-    
+
     const newUser = new UserModel({
       userName,
       uid,
       avatar,
-      cID : {no : cmnd}
-      
+      cID: { no: cmnd },
     });
     await newUser.save();
-    return res.status(201).send({message : "User created successfully"});
+    return res.status(201).send({ message: "User created successfully" });
   } catch (error) {
     console.log(error);
-    return res.status(500).send({message :"Error user"});
+    return res.status(500).send({ message: "Internal server error" });
   }
 };
 
@@ -50,9 +49,9 @@ export const updateUser = async (req, res) => {
   const uid = res.locals.uid;
   delete newdata.uid;
   delete newdata.roles;
-  console.log(uid);
+  console.log(uid, "Dang update....");
   if (!newdata) {
-    return res.status(404).send("Not Data From Client");
+    return res.status(404).send({message : "Not Data From Client"});
   }
   // chặn user có thể update uid và roles bằng code.
   // if(newdata.uid && newdata.roles === 'host')
@@ -114,18 +113,18 @@ export const changeUserUpHost = async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: "User not found!" });
     }
+   
+    
     if (
-      !(
-        user.cID.fullName ||
+      user.cID.fullName ||
         user.cID.no ||
         user.cID.placeOfOrigin ||
         user.cID.dateOfBirth ||
-        user.cID.placeOfResidence
-      ) &&
-      !user.phoneNumber
+        user.cID.placeOfResidence ||
+        user.phoneNumber
     ) {
       return res
-        .status(404)
+        .status(400)
         .json({ message: "You must fill in all information!" });
     }
     const updatedUser = await UserModel.findOneAndUpdate(

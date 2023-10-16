@@ -39,16 +39,25 @@ const homeModel = new mongoose.Schema({
         required : true,
         default : true
     },
-    commnets : [{
-        type : mongoose.Schema.Types.ObjectId,
-        ref : 'Comment'
-    }],
+    // commnets : [{
+    //     type : mongoose.Schema.Types.ObjectId,
+    //     ref : 'Comment'
+        //  
+    // }],
+    
     ownerId : {
         type : mongoose.Schema.Types.ObjectId,
         ref : 'User',
         require : true,
+    },
+    // tenants: [{ // người thuê nhà và đã từng thuê dùng để quản lý comment bài viết
+    //     type: mongoose.Schema.Types.ObjectId,
+    //     ref: 'User'
+    // }],
+    currentTenant: { // dùng để theo dõi người đang thuê
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
     }
-
 })
 
 const HomeModel = mongoose.model('Home', homeModel);

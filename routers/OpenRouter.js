@@ -13,5 +13,6 @@ OpenRouter.post('/user/add',addUser);
 OpenRouter.get('/home/list',listHome);
 OpenRouter.get('/home',homeForId);
 OpenRouter.get('/home/search',searchHomeForAddress);
+
 // OpenRouter.get('/map',address);
 export default OpenRouter;

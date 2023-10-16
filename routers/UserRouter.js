@@ -9,6 +9,6 @@ import { changeUserUpHost, updateUser,getUser } from "../controllers/UserControl
 const UserRouter = express.Router(); 
 
 UserRouter.post('/user/login',getUser);
-UserRouter.post('/user/update',updateUser);
-UserRouter.post('/user/update/host',changeUserUpHost)
+UserRouter.patch('/user/update',updateUser);
+UserRouter.patch('/user/update/host',changeUserUpHost)
 export default UserRouter;
