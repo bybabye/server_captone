@@ -14,7 +14,6 @@ import { adminApp } from "../firebaseConfig.js";
         .verifyIdToken( accessToken)
         .then((decodedToken) => {
           res.locals.uid = decodedToken.uid;
-          console.log(decodedToken.uid);
           next();
         })
         .catch((err) => {

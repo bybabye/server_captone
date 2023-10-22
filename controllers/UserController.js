@@ -3,7 +3,7 @@ import UserModel from "../models/userModels.js";
 export const addUser = async (req, res) => {
   const { userName, uid, cmnd, avatar } = req.body;
   try {
-    console.log(userName, uid);
+   
 
     if (uid == null) {
       return res.status(400).send({ message: "Your information is invalid" });

@@ -110,7 +110,7 @@ export const searchHomeForAddress = async (req, res) => {
       subDistrict !== undefined ? subDistrict : { $exists: true };
     query["address.district"] =
       district !== undefined ? district : { $exists: true };
-    query["address.city"] = city !== undefined ? city : { $exists: true };
+    query["address.city"] = city !== undefined ? { $regex: new RegExp(city, "i")} : { $exists: true };
     const homes = await HomeModel.find(query);
     console.log(homes.length);
     return res.status(200).send(homes);

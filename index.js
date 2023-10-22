@@ -32,7 +32,7 @@ const limiter = rateLimit({
 
 app.use(cors(), bodyParser.json(), limiter);
 app.use("/", OpenRouter);
-app.use("/", TestRouter);
+//app.use("/", TestRouter);
 app.use("/", authorizationJWT);
 app.use("/", ChatRouter);
 app.use("/", UserRouter);
