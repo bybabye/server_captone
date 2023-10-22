@@ -1,4 +1,4 @@
-import { addComment, removeComment, updateComment } from "../controllers/commentController.js";
+import { addComment, removeComment, updateComment } from "../controllers/CommentController.js"
 import express from "express";
 
 
