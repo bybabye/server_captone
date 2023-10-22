@@ -11,7 +11,7 @@ import HomeRouter from "./routers/HomeRouter.js";
 import UserRouter from "./routers/UserRouter.js";
 import ChatRouter from "./routers/ChatRouter.js";
 
-import TestRouter from "./routers/TestRouter.js";
+
 import CommentRouter from "./routers/CommentRouter.js";
 import authorizationJWT from "./middleware/JWT.js";
 // Kết nối MongoDB bằng URI được đặt trong tệp .env
@@ -32,7 +32,6 @@ const limiter = rateLimit({
 
 app.use(cors(), bodyParser.json(), limiter);
 app.use("/", OpenRouter);
-//app.use("/", TestRouter);
 app.use("/", authorizationJWT);
 app.use("/", ChatRouter);
 app.use("/", UserRouter);
