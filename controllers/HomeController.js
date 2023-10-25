@@ -44,14 +44,14 @@ export const listHome = async (req, res) => {
 
     const skipCount = (page - 1) * homeSize; // tính số bản khi cần bỏ qua;
     const data = await HomeModel.find({
-      status : true
+      status: true,
     })
       .populate({
         path: "ownerId",
       })
       .skip(skipCount)
-      .limit(homeSize); //12 
-
+      .limit(homeSize); //12
+    console.log("1");
     return res.status(200).send(data);
   } catch (error) {
     console.log(error);
@@ -69,9 +69,12 @@ export const homeForId = async (req, res) => {
       path: "ownerId",
       // select neu co
     });
-  // home Id
-  // review => 
-    const comments = await CommentModel.find({homeId : home._id}).populate({path: "authorId"}) ?? [];
+    // home Id
+    // review =>
+    const comments =
+      (await CommentModel.find({ homeId: home._id }).populate({
+        path: "authorId",
+      })) ?? [];
     const data = {
       address: home.address,
       _id: home._id,
@@ -104,15 +107,38 @@ export const searchHomeForAddress = async (req, res) => {
   try {
     const { subDistrict, district, city } = req.query;
     const query = {};
+    console.log(subDistrict, district, city);
 
     // Thêm điều kiện tìm kiếm cho subDistrict nếu có giá trị
     query["address.subDistrict"] =
-      subDistrict !== undefined ? subDistrict : { $exists: true };
+      subDistrict !== (undefined || "undefined")
+        ? subDistrict
+        : { $exists: true };
     query["address.district"] =
-      district !== undefined ? district : { $exists: true };
-    query["address.city"] = city !== undefined ? { $regex: new RegExp(city, "i")} : { $exists: true };
+      district !== (undefined || "undefined") ? district : { $exists: true };
+    query["address.city"] =
+      city !== undefined
+        ? { $regex: new RegExp(city, "i") }
+        : { $exists: true };
     const homes = await HomeModel.find(query);
     console.log(homes.length);
+    return res.status(200).send(homes);
+  } catch (error) {
+    return res.status(500).send({ message: "Internal server error" });
+  }
+};
+
+export const searchHomeForRoomType = async (req, res) => {
+  try {
+    const { roomType } = req.query;
+    let room = "Nhà Trọ & Phòng Trọ";
+    if (roomType == 2) {
+      room = "Nhà Nguyên Căn";
+    }
+    if (roomType == 3) {
+      room = "Chung Cư";
+    }
+    const homes = await HomeModel.find({ roomType: room });
     return res.status(200).send(homes);
   } catch (error) {
     return res.status(500).send({ message: "Internal server error" });
@@ -139,7 +165,7 @@ export const deleteHome = async (req, res) => {
         .status(404)
         .send({ message: "Home not found or does not belong to the user" });
     }
-    
+
     // Nếu bài đăng tồn tại và thuộc về người dùng, thì xóa nó
     await home.remove();
     return res.status(200).send({ message: "Home deleted successfully" });
@@ -176,7 +202,9 @@ export const updateTenant = async (req, res) => {
         },
         { new: true } // Trả về tài liệu sau khi đã cập nhật
       );
-      return res.status(200).send({ message: "Home update Tenant successfully" });
+      return res
+        .status(200)
+        .send({ message: "Home update Tenant successfully" });
     } else {
       return res.status(404).send({ message: "Home Not Found" });
     }
