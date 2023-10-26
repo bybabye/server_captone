@@ -62,6 +62,9 @@ export const updateUser = async (req, res) => {
     // Nếu chuỗi dateOfBirth có thể chuyển đổi thành định dạng thời gian
     // Thì chuyển đổi nó và gán vào temporaryData
     newdata.dateOfBirth = new Date(newdata.dateOfBirth);
+    console.log("da convet thanh cong");
+  }else{
+    console.log("convert k thanh cong");
   }
   const temporaryData = {
     userName: newdata.userName === "" ? null : newdata.userName,
@@ -72,7 +75,7 @@ export const updateUser = async (req, res) => {
     "cID.sex": newdata.sex === "" ? null : newdata.sex,
     "cID.placeOfOrigin":
       newdata.placeOfOrigin === "" ? null : newdata.placeOfOrigin,
-    "cId.dateOfBirth": newdata.dateOfBirth,
+    "cID.dateOfBirth": newdata.dateOfBirth,
     "cID.placeOfResidence":
       newdata.placeOfResidence === "" ? null : newdata.placeOfResidence,
   };
@@ -91,7 +94,7 @@ export const updateUser = async (req, res) => {
     }
 
     console.log(user);
-    return res.status(200).send({ message: "Updated profile successfully" });
+    return res.status(200).send({ message: "Updated profile successfully",data : user });
   } catch (error) {
     console.log(error);
     return res.status(500).send({ message: "Internal server error" });
@@ -150,27 +153,11 @@ export const changeUserUpHost = async (req, res) => {
 
 //
 function isValidDate(dateString) {
-  // Kiểm tra nếu chuỗi dateString có thể chuyển đổi thành định dạng thời gian hợp lệ
-  // Ví dụ: "20/3/2021"
-  const regExp = /^\d{1,2}\/\d{1,2}\/\d{4}$/;
+  const regExp = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z$/;
   if (!regExp.test(dateString)) {
     return false;
   }
-  if (dateString === undefined) return false;
 
-  const parts = dateString.split("/");
-  const day = parseInt(parts[0], 10);
-  const month = parseInt(parts[1], 10);
-  const year = parseInt(parts[2], 10);
-
-  if (year < 1000 || year > 3000 || month === 0 || month > 12) {
-    return false;
-  }
-
-  const maxDay = new Date(year, month, 0).getDate();
-  if (day <= 0 || day > maxDay) {
-    return false;
-  }
-
-  return true;
+  const date = new Date(dateString);
+  return !isNaN(date);
 }

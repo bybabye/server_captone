@@ -55,6 +55,28 @@ export const addChat = async (req, res) => {
   }
 };
 
+export const getChatForId = async (req,res) => {
+  try {
+    
+    const uid = res.locals.uid;
+    
+    const chatId = req.query.chatId;
+    
+    const user = await UserModel.findOne({uid});
+
+    const chat = await ChatModel.findById(chatId);
+    const idUser =  chat.membersId.find(e => e._id !== user._id);
+   
+    const guest = await UserModel.findOne({_id : idUser},{userName : 1,avatar : 1},).exec()
+    console.log(guest);
+    return res.status(200).send({ data: chat,guest});
+
+  }catch(error){
+    console.log("getChatForId" + error);
+    return res.status(500).send({ message: "Internal server error" });
+  }
+}
+
 export const deleteMessage = async (req,res) => {
   try {
     
