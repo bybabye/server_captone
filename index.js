@@ -14,6 +14,8 @@ import ChatRouter from "./routers/ChatRouter.js";
 
 import CommentRouter from "./routers/CommentRouter.js";
 import authorizationJWT from "./middleware/JWT.js";
+import RentalRouter from "./routers/RentalRouter.js";
+import NotificationRouter from "./routers/NotificationRouter.js";
 // Kết nối MongoDB bằng URI được đặt trong tệp .env
 const URI = `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@cluster0.i92x06q.mongodb.net/?retryWrites=true&w=majority`;
 
@@ -37,6 +39,8 @@ app.use("/", ChatRouter);
 app.use("/", UserRouter);
 app.use("/", HomeRouter);
 app.use("/", CommentRouter);
+app.use("/", RentalRouter);
+app.use("/", NotificationRouter);
 
 // Cấu hình kết nối với MongoDB bằng Mongoose
 

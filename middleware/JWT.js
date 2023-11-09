@@ -6,6 +6,7 @@ import { adminApp } from "../firebaseConfig.js";
 // Sử dụng middleware để xử lý CORS và phần thân yêu cầu HTTP
  const authorizationJWT = async (req, res, next) => {
     const authorizationHeader = req.headers.authorization;
+    console.log(authorizationHeader);
     
     if (authorizationHeader) {
       const accessToken = authorizationHeader.split(" ")[1];

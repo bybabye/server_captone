@@ -168,13 +168,10 @@ export const getListMessages = async (req,res) => {
     const data = await MessageModel.find({
       chatId : mChatId
     });
-    const formattedData = data.map(message => {
-      const customFormattedTime = format(new Date(message.sentTime), "dd/MM/yyyy HH:mm:ss");
-      return { ...message.toObject(), sentTime: customFormattedTime };
-    });
+    
     return res.status(200).send({
       message: "List of messages retrieved successfully",
-      data : formattedData
+      data : data
     });
   } catch (error) {
     console.log(error);

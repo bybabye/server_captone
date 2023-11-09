@@ -12,10 +12,6 @@ const notificationModel = new mongoose.Schema(
       ref: "User",
       required: true,
     },
-    type: {
-      type: String,
-      required: true,
-    },
     target: {
       type: String,
       required: true,
@@ -36,6 +32,6 @@ const notificationModel = new mongoose.Schema(
   { timestamps: true }
 );
 
-const NotificationModel = mongoose.model("Chat", notificationModel);
+const NotificationModel = mongoose.model("Notification", notificationModel);
 
 export default NotificationModel;
