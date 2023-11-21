@@ -23,8 +23,12 @@ const rentalModel = new mongoose.Schema({
     },
     rentalStatus :{ 
         type : Boolean
+    },
+    hostId : {
+        type : mongoose.Schema.Types.ObjectId,
+        ref : 'User',
+        require : true,
     }
-    
     
 },{timestamps : true})
 

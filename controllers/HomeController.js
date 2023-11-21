@@ -154,20 +154,15 @@ export const deleteHome = async (req, res) => {
     // lấy id người dùng
     const uid = res.locals.uid;
     // lấy id từ post để xoá
-    const postId = res.params.postId;
+    const postId = req.params.postId;
     const user = await UserModel.findOne({ uid });
-    const home = await HomeModel.findOne({
-      _id: postId,
-      ownerId: user.uid,
-    });
-    if (!user || !home) {
-      return res
-        .status(404)
-        .send({ message: "Home not found or does not belong to the user" });
+    if (user.roles == "admin") {
+      
+      await HomeModel.deleteOne({ _id: postId });
+      return res.status(200).send({ message: "Home deleted successfully" });
     }
-
-    // Nếu bài đăng tồn tại và thuộc về người dùng, thì xóa nó
-    await home.remove();
+    
+    await HomeModel.deleteOne({ _id: postId, ownerId: user.uid });
     return res.status(200).send({ message: "Home deleted successfully" });
   } catch (error) {
     console.log(error);

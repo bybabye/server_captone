@@ -1,3 +1,4 @@
+import ReportModel from "../models/reportModel.js";
 import UserModel from "../models/userModels.js";
 
 export const addUser = async (req, res) => {
@@ -103,7 +104,7 @@ export const updateUser = async (req, res) => {
 // dùng cho admin xem
 export const listUser = async (req, res) => {
   try {
-    const users = await UserModel.find();
+    const users = await UserModel.find({ roles: { $ne: "admin" } });
     return res.send({ data: users });
   } catch (error) {
     return res.send({ error });
@@ -150,6 +151,26 @@ export const changeUserUpHost = async (req, res) => {
     return res.status(500).json({ message: "Internal server error" });
   }
 };
+
+export const createReport = async (req,res) => {
+  const uid = res.locals.uid;
+  const homeId = req.query.homeId;
+  const {title ,Objective} = req.body;
+  try {
+    const user = await UserModel.findOne({ uid });
+    const newReport = new ReportModel({
+      title ,
+      Objective,
+      homeId,
+      authorId : user._id
+    })
+    await newReport.save();
+
+    return res.status(200).json({message : "Report created sucessfully" , data : newReport})
+  } catch (error) {
+    return res.status(500).json({ message: "Internal server error" });
+  }
+}
 
 //
 function isValidDate(dateString) {

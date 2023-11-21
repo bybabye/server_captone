@@ -5,17 +5,7 @@ import bodyParser from "body-parser";
 import mongoose from "mongoose";
 import "dotenv/config.js";
 import rateLimit from "express-rate-limit";
-import OpenRouter from "./routers/OpenRouter.js";
-import HomeRouter from "./routers/HomeRouter.js";
-
-import UserRouter from "./routers/UserRouter.js";
-import ChatRouter from "./routers/ChatRouter.js";
-
-
-import CommentRouter from "./routers/CommentRouter.js";
-import authorizationJWT from "./middleware/JWT.js";
-import RentalRouter from "./routers/RentalRouter.js";
-import NotificationRouter from "./routers/NotificationRouter.js";
+import router from "./routers/index.js";
 // Kết nối MongoDB bằng URI được đặt trong tệp .env
 const URI = `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@cluster0.i92x06q.mongodb.net/?retryWrites=true&w=majority`;
 
@@ -32,16 +22,10 @@ const limiter = rateLimit({
   message: "Bạn đã vượt quá giới hạn tốc độ truy cập.",
 });
 
+// Routers
+// Middleware
 app.use(cors(), bodyParser.json(), limiter);
-app.use("/", OpenRouter);
-app.use("/", authorizationJWT);
-app.use("/", ChatRouter);
-app.use("/", UserRouter);
-app.use("/", HomeRouter);
-app.use("/", CommentRouter);
-app.use("/", RentalRouter);
-app.use("/", NotificationRouter);
-
+app.use("/", router);
 // Cấu hình kết nối với MongoDB bằng Mongoose
 
 mongoose.set("strictQuery", false);

@@ -10,7 +10,7 @@ export const addChat = async (req, res) => {
   const uid = res.locals.uid;
   try {
     // Bước 1: Tìm người dùng bạn muốn trò chuyện với
-    // xài promise all để thực hiện cùng lúc 2 hàm bất đồng bộ dưới
+  
     const [myUser, yUser] = await Promise.all([
       UserModel.findOne({ uid: uid }),
       UserModel.findOne({ uid: senderId }),

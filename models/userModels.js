@@ -53,6 +53,7 @@ const userModel = new mongoose.Schema({
     enum: ["user", "admin", "host"],
     default: "user",
   },
+  isBlocked: { type: Boolean, default: false },
 });
 
 const UserModel = mongoose.model("User", userModel);

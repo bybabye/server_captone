@@ -1,3 +1,4 @@
+import HomeModel from "../models/homeModels.js";
 import NotificationModel from "../models/notificationModel.js";
 import RentalModel from "../models/rentalModel.js";
 import UserModel from "../models/userModels.js";
@@ -6,9 +7,16 @@ export const addRental = async (req, res) => {
   try {
     const { homeId, leasePeriod, cost } = req.body;
     const uid = res.locals.uid;
-    const user = await UserModel.findOne({ uid });
+
     const currentDate = new Date();
     const leaseEndDate = new Date(currentDate);
+
+    const [user, home] = await Promise.all([
+      await UserModel.findOne({ uid }),
+      await HomeModel.findOne({ _id: homeId }),
+    ]);
+
+    console.log(home.ownerId);
     leaseEndDate.setMonth(currentDate.getMonth() + leasePeriod);
     // kiểm tra xem nhà đã đc thuê chưa
     const [checkRental, checkRentalUser] = await Promise.all([
@@ -30,6 +38,7 @@ export const addRental = async (req, res) => {
       leasePeriod: leasePeriod,
       cost: cost,
       endTime: leaseEndDate,
+      hostId: home.ownerId,
       rentalStatus: 0,
     });
     await newRental.save();
@@ -64,13 +73,13 @@ export const getRental = async (req, res) => {
  * Chuyển trạng thái nhà ở đã được thuê
  * Xoá hết các notification có chứa rental đó
  * Xoá hết các notification của người thuê trước đó
- * 
+ * chặn thuê nếu người dùng đã thuê đc phòng
  */
 export const rentalConfirmation = async (req, res) => {
   try {
     const rentalId = req.query.rentalId;
-    const rental = await RentalModel.findOne({ _id: rentalId })
-    if(rental.rentalStatus){
+    const rental = await RentalModel.findOne({ _id: rentalId });
+    if (rental.rentalStatus) {
       return res.status(400).send({ message: "Rental is confirmed!" });
     }
     await Promise.all([
@@ -84,8 +93,29 @@ export const rentalConfirmation = async (req, res) => {
       }),
     ]);
 
-    
     return res.status(200).send({ message: "Rental confirmed!" });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).send({ message: "Internal server error" });
+  }
+};
+/**
+ * tim kiem tat ca nhung nha da cho thue cua host do
+ */
+export const getRentalsForHost = async (req, res) => {
+  try {
+    const uid = res.locals.uid;
+    const user = await UserModel.findOne({ uid});
+
+    const rentals = await RentalModel.find({hostId : user._id}).populate('tenantId').populate(
+      {
+        path : 'homeId',
+        populate : {path : 'ownerId'}
+      }
+    );
+
+    return res.status(200).send({data : rentals});
+
   } catch (error) {
     console.log(error);
     return res.status(500).send({ message: "Internal server error" });
