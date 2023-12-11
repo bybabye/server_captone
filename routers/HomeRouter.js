@@ -3,7 +3,9 @@ import express from "express";
 import { addHome, deleteHome, removeCurrentTenant, updateTenant } from "../controllers/HomeController.js";
 import { uploadFile } from "../google_apis/connect.js";
 
-
+import multer from 'multer';
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
 
 
 
