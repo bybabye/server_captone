@@ -65,8 +65,7 @@ export const getChatForId = async (req,res) => {
     const user = await UserModel.findOne({uid});
 
     const chat = await ChatModel.findById(chatId);
-    const idUser =  chat.membersId.find(e => e._id !== user._id);
-   
+    const idUser = chat.membersId.find(e => e.toString() !== user._id.toString());
     const guest = await UserModel.findOne({_id : idUser},{userName : 1,avatar : 1},).exec()
     console.log(guest);
     return res.status(200).send({ data: chat,guest});
@@ -136,13 +135,14 @@ export const getListChat = async (req,res) => {
 // phải kiểm tra người nhắn có phải là người trong chat hay không?
 export const sendMessages = async (req,res) => {
   try {
-    const {type,content} = req.body;
+    const {type,content,mId} = req.body;
     const chatId = req.query.chatId;
     const uid = res.locals.uid;
     console.log(chatId,type,content);
     const user = await UserModel.findOne({uid})
     const mChatId = new mongoose.Types.ObjectId(chatId);
     const newMessage = new MessageModel({
+      messId : mId,
       senderId : user._id,
       chatId : mChatId ,
       content,
@@ -155,7 +155,8 @@ export const sendMessages = async (req,res) => {
     });
   } catch (error) {
     console.log(error);
-    return res.status(500).send({ message: "Internal server error" });
+    return res.status(500).send({
+       message: "Internal server error" });
   }
 }
 
@@ -172,6 +173,19 @@ export const getListMessages = async (req,res) => {
     return res.status(200).send({
       message: "List of messages retrieved successfully",
       data : data
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).send({ message: "Internal server error" });
+  }
+}
+//
+export const deleteChatForChatId = async (req,res) => {
+  try {
+    const chatId = req.query.chatId;
+    const messages = await MessageModel.deleteMany({chatId : chatId})
+    return res.status(200).send({
+      message: "List of messages deleted successfully",
     });
   } catch (error) {
     console.log(error);

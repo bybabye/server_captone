@@ -5,6 +5,10 @@ const messageModel = new mongoose.Schema({
         ref : 'Chat',
         require : true,
     },
+    messId : {
+        type : String,
+        require : true
+    },
     type : {
         type : String,
         enum : ['video','text','voice','image'],
@@ -22,8 +26,14 @@ const messageModel = new mongoose.Schema({
     sentTime : {
         type : Date,
         require : true,
-    }
-    
+    },
+    // user da delete
+    deleted : [
+        {
+            type : mongoose.Schema.Types.ObjectId,
+            ref : 'User'
+        }
+    ]
 },{timestamps : true})
 
 
