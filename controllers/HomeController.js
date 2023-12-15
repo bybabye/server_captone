@@ -1,5 +1,4 @@
 import HomeModel from "../models/homeModels.js";
-import fs from "fs";
 import UserModel from "../models/userModels.js";
 import CommentModel from "../models/commentModel.js";
 
@@ -245,5 +244,6 @@ export const removeCurrentTenant = async (req, res) => {
     return res.status(500).send({ message: "Internal server error" });
   }
 };
+
 
 //

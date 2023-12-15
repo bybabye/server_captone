@@ -1,4 +1,4 @@
-import fs from "fs";
+
 import { google } from "googleapis";
 import apikeys from "../apikey.json" assert  {type : "json"};
 import { PassThrough } from 'stream';
@@ -12,7 +12,6 @@ const authorize = async () => {
             apikeys.private_key,
             SCOPES
         );
-
         await jwtClient.authorize();
         return jwtClient;
     } catch (error) {
@@ -25,45 +24,61 @@ const authorize = async () => {
  * Check 
  * Cần check xem có phải host không ? 
  */
-const uploadFile = async (req,res) => {
+const uploadFiles = async (req, res) => {
     try {
         const uid = res.locals.uid;
-        const file = req.file;
-        console.log(req.file);
-        if(!file) {
-            return res.send( { status: 404, message: "Internal server error" });
+        const files = req.files; // Lấy danh sách các files từ req.files thay vì req.file
+        console.log(files);
+
+        if (!files || files.length === 0) {
+            return res.send({ status: 404, message: 'Files Not Found' });
         }
-        const authClient = await authorize()
+
+        const authClient = await authorize();
         const drive = google.drive({ version: 'v3', auth: authClient });
-        const uidDrive = await createFolder(uid,drive);
-        const fileMetaData = {
-            name: file.originalname,
-            mimeType: file.mimetype,
-            parents: [`${uidDrive}`], // Set the parent folder ID,
-        };
-        const media = {
-            mimeType :  file.mimetype,
-            body: bufferToStream(file.buffer),
-        };
-        
-        console.log('Uploading file. Metadata:', fileMetaData);
-        const response = await drive.files.create({
-            resource: fileMetaData,
-            media: media,
-            fields: "id,webViewLink"
+
+        const uidDrive = await createFolder(uid, drive);
+
+        // Lặp qua danh sách files và thực hiện upload cho từng file
+        const uploadPromises = files.map(async (file) => {
+            const fileMetaData = {
+                name: file.originalname,
+                mimeType: file.mimetype,
+                parents: [`${uidDrive}`],
+            };
+
+            const media = {
+                mimeType: file.mimetype,
+                body: bufferToStream(file.buffer),
+            };
+
+            console.log('Uploading file. Metadata:', fileMetaData);
+            const response = await drive.files.create({
+                resource: fileMetaData,
+                media: media,
+                fields: 'id,webViewLink',
+            });
+
+            console.log('Upload successful. Response:', response.data);
+
+            return {
+                id: response.data.id,
+                url: response.data.webViewLink,
+            };
         });
 
-        console.log('Upload successful. Response:', response.data);
+        const results = await Promise.all(uploadPromises);
 
-        return res.send({ status: 200, message: "File uploaded successfully", data : {
-            id : response.data.id,
-            url : response.data.webViewLink
-        }})
+        return res.status(200).send({
+            message: 'Files uploaded successfully',
+            data: results,
+        });
     } catch (error) {
-        console.error("File upload error:", error);
-        return res.send( { status: 500, message: "Internal server error" });
+        console.error('Files upload error:', error);
+        return res.status(500).send({ message: 'Internal server error' });
     }
 };
+
 
 const bufferToStream = (buffer) => {
     const stream = new PassThrough();
@@ -73,8 +88,6 @@ const bufferToStream = (buffer) => {
 
 const getFolderId = async (uid,drive) => {
     try {
-        
-       
         
         const response = await drive.files.list({
             q: `name='${uid}' and mimeType='application/vnd.google-apps.folder'`,
@@ -126,4 +139,4 @@ const getFolderId = async (uid,drive) => {
     }
 }
 
-export {  uploadFile,createFolder };
+export {  uploadFiles,createFolder };

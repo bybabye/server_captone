@@ -8,25 +8,31 @@
 <body>
     <h1>Image Upload</h1>
     <form id="uploadForm" enctype="multipart/form-data" method="POST">
-        <input type="file" name="image" accept="image/*">
+        <input type="file" name="images" accept="image/*" multiple>
         <button type="submit">Upload Image</button>
     </form>
 
     <script>
         document.getElementById('uploadForm').addEventListener('submit', async function (event) {
             event.preventDefault();
-
+    
             const formData = new FormData(this);
-            console.log('Selected file:', formData.get('image'));
-
+            const images = formData.getAll('images');
+            const token = 'eyJhbGciOiJSUzI1NiIsImtpZCI6ImJlNzgyM2VmMDFiZDRkMmI5NjI3NDE2NThkMjA4MDdlZmVlNmRlNWMiLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoiaHV5IGLDuWkiLCJwaWN0dXJlIjoiaHR0cHM6Ly9saDMuZ29vZ2xldXNlcmNvbnRlbnQuY29tL2EvQUNnOG9jTHM3c3pEQ0FRaUs5UHJtWE42THN4OUlPT1RQMmIzSGpkLVpjQU4wajhVdElJPXM5Ni1jIiwiaXNzIjoiaHR0cHM6Ly9zZWN1cmV0b2tlbi5nb29nbGUuY29tL2NhcHRvbmUxLTNmYmExIiwiYXVkIjoiY2FwdG9uZTEtM2ZiYTEiLCJhdXRoX3RpbWUiOjE3MDI1MzQyNTYsInVzZXJfaWQiOiJQRDhqRWJya1NlT3ZlWGloSnNOTkJXQldWa0ozIiwic3ViIjoiUEQ4akVicmtTZU92ZVhpaEpzTk5CV0JXVmtKMyIsImlhdCI6MTcwMjUzNDI1NiwiZXhwIjoxNzAyNTM3ODU2LCJlbWFpbCI6Imx1eGkyOTEwMDBAZ21haWwuY29tIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsImZpcmViYXNlIjp7ImlkZW50aXRpZXMiOnsiZ29vZ2xlLmNvbSI6WyIxMTYwODk2OTAyMDM5OTY1MzA4MjIiXSwiZW1haWwiOlsibHV4aTI5MTAwMEBnbWFpbC5jb20iXX0sInNpZ25faW5fcHJvdmlkZXIiOiJnb29nbGUuY29tIn19.MvZ7dJvCwefrGOX2j39d-l0RfzVOYgGkx2LbYmvWlUP8LKWRc5SePr75eeZZ4r0IUoLmCSAB80xql0W43astrzDkZQrA979EpDTtE-cx1keuCiwegLyIp2Std0TagvFkXa48XWb8BNn_JzPG-xC6ZgJZS6YEFHGjeHDpA9A0KTmcxcafFkGmEXhJPEms6cSA3YU9ppi_TwUIwH91s9xxzXZYCdNVn66hKjhvsZqCEp7XVqFTIvuez6m2LD8sSZze1UT3saEb2AONpQCr09Pf5r3X5KzdsFvFgFf33cqOU4hpY3a1R3Oo4iTm4UIRZe75Ls8IZnyYXzad7HMM5SvjEQ'
+            console.log('Selected files:', images);
+    
             const response = await fetch('http://localhost:4000/upload', {
                 method: 'POST',
+                headers : {
+                    'Authorization': `Bearer ${token}`,
+                },
                 body: formData,
             });
-
+    
             const result = await response.json();
             console.log('Server response:', result);
         });
     </script>
+    
 </body>
 </html>
