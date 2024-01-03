@@ -14,11 +14,9 @@ const notificationModel = new mongoose.Schema(
     },
     target: {
       type: String,
-      required: true,
     },
     targetId: {
       type: mongoose.Schema.Types.ObjectId,
-      required: true,
     },
     content: {
       type: String,

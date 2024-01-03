@@ -55,7 +55,7 @@ export const getRental = async (req, res) => {
     const rentalId = req.query.rentalId;
     const rental = await RentalModel.findOne({ _id: rentalId }).populate(
       "tenantId"
-    );
+    ).populate("homeId");
     if (rental) {
       return res.status(200).send({
         data: rental,

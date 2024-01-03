@@ -45,7 +45,7 @@ const homeModel = new mongoose.Schema({
         require : true,
     },
     
-})
+},{timestamps : true})
 
 const HomeModel = mongoose.model('Home', homeModel);
 

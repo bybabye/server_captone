@@ -12,7 +12,10 @@ export const addComment = async (req, res) => {
       UserModel.findOne({ uid }),
       HomeModel.findById(homeId),
     ]);
- 
+    if(!content) {
+      return res.status(404).send({ message: "Comments cannot be empty" });
+    }
+    // sua de test notification
     if (!home) {
       return res.status(404).send({ message: "Home not Found" });
     }

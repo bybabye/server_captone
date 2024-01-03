@@ -68,25 +68,29 @@ export const updateUser = async (req, res) => {
     console.log("convert k thanh cong");
   }
   const temporaryData = {
-    userName: newdata.userName === "" ? null : newdata.userName,
-    address: newdata.address === "" ? null : newdata.address,
-    phoneNumber: newdata.phoneNumber === "" ? null : newdata.phoneNumber,
-    "cID.fullName": newdata.fullName === "" ? null : newdata.fullName,
-    "cID.no": newdata.no === "" ? null : newdata.no,
-    "cID.sex": newdata.sex === "" ? null : newdata.sex,
-    "cID.placeOfOrigin":
-      newdata.placeOfOrigin === "" ? null : newdata.placeOfOrigin,
+    userName: newdata.userName,
+    address: newdata.address,
+    phoneNumber: newdata.phoneNumber,
+    "cID.fullName": newdata.fullName,
+    "cID.no": newdata.no,
+    "cID.sex": newdata.sex,
+    "cID.placeOfOrigin": newdata.placeOfOrigin,
     "cID.dateOfBirth": newdata.dateOfBirth,
-    "cID.placeOfResidence":
-      newdata.placeOfResidence === "" ? null : newdata.placeOfResidence,
+    "cID.placeOfResidence": newdata.placeOfResidence,
+    avatar: newdata.avatar
   };
-  console.log(temporaryData);
+  
+  // Lọc bỏ các trường có giá trị là null hoặc undefined
+  const filteredData = Object.fromEntries(
+    Object.entries(temporaryData).filter(([key, value]) => value !== null && value !== undefined)
+  );
+  console.log(filteredData);
   // phải khoá rolers ở cái này.
   try {
     const user = await UserModel.findOneAndUpdate(
       { uid }, //Sử dụng uid làm điều kiện tìm kiếm
       {
-        $set: temporaryData,
+        $set: filteredData,
       },
       { new: true }
     );
@@ -117,18 +121,22 @@ export const changeUserUpHost = async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: "User not found!" });
     }
+    if(user.roles === 'host' ) {
+      return res.status(200).json({ message: "you are already the host!" });
+    }
    
     
     if (
-      user.cID.fullName ||
-        user.cID.no ||
-        user.cID.placeOfOrigin ||
-        user.cID.dateOfBirth ||
-        user.cID.placeOfResidence ||
-        user.phoneNumber
+      !user.cID.fullName ||
+        !user.cID.no ||
+        !user.cID.placeOfOrigin ||
+        !user.cID.dateOfBirth ||
+        !user.cID.placeOfResidence ||
+        !user.phoneNumber
     ) {
+      console.log(user.phoneNumber,user.cID.placeOfResidence,user.cID.dateOfBirth,user.cID.placeOfOrigin,user.cID.no,user.cID.fullName);
       return res
-        .status(400)
+        .status(404)
         .json({ message: "You must fill in all information!" });
     }
     const updatedUser = await UserModel.findOneAndUpdate(

@@ -51,6 +51,7 @@ export const listNotification = async (req,res) => {
             createdAt : -1,
         }).populate('senderId',)
         return res.status(200).send({
+            message : "success",
             data : notifications
         })
 

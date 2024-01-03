@@ -6,7 +6,7 @@ import CommentModel from "../models/commentModel.js";
 export const addHome = async (req, res) => {
   try {
     const uid = res.locals.uid;
-    const { address, price, des, images, status, roomArea, ownerId } = req.body;
+    const { address, price, des, images, status, roomArea ,roomType } = req.body;
     const user = await UserModel.findOne({ uid });
     if (user.roles !== "host") {
       return res
@@ -20,10 +20,11 @@ export const addHome = async (req, res) => {
       images,
       status,
       roomArea,
-      ownerId,
+      roomType,
+      ownerId : user._id,
     });
     await newHome.save();
-    return res.status(201).send("Home created successfully");
+    return res.status(201).send({message : "Home created successfully"});
   } catch (error) {
     console.log(error);
 
@@ -49,7 +50,7 @@ export const listHome = async (req, res) => {
         path: "ownerId",
       })
       .skip(skipCount)
-      .limit(homeSize); //12
+      .limit(homeSize).sort({ createdAt: -1 }); //12
     console.log("1");
     return res.status(200).send(data);
   } catch (error) {

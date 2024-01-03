@@ -54,7 +54,7 @@ const userModel = new mongoose.Schema({
     default: "user",
   },
   isBlocked: { type: Boolean, default: false },
-});
+},{timestamps : true});
 
 const UserModel = mongoose.model("User", userModel);
 
