@@ -73,6 +73,7 @@ export const getRental = async (req, res) => {
  * Chuyển trạng thái nhà ở đã được thuê
  * Xoá hết các notification có chứa rental đó
  * Xoá hết các notification của người thuê trước đó
+ * thêm thông báo cho người dùng
  * chặn thuê nếu người dùng đã thuê đc phòng
  */
 export const rentalConfirmation = async (req, res) => {
@@ -82,6 +83,7 @@ export const rentalConfirmation = async (req, res) => {
     if (rental.rentalStatus) {
       return res.status(400).send({ message: "Rental is confirmed!" });
     }
+    
     await Promise.all([
       NotificationModel.deleteMany({ senderId: rental.tenantId }),
       RentalModel.deleteMany({

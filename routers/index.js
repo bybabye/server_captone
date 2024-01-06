@@ -11,13 +11,15 @@ import NotificationRouter from './NotificationRouter.js';
 import authorizationJWT from '../middleware/JWT.js';
 import { authorizationAdmin } from '../middleware/admin.js';
 import AdminRouter from './AdminRouter.js';
+import { authorizationBlock } from '../middleware/block.js';
 
 const router = express.Router();
 
 router.use("/", OpenRouter);
 router.use("/", authorizationJWT);
-router.use("/", ChatRouter);
+//router.use("/", authorizationBlock);
 router.use("/", UserRouter);
+router.use("/", ChatRouter);
 router.use("/", HomeRouter);
 router.use("/", CommentRouter);
 router.use("/", RentalRouter);

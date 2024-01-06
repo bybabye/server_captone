@@ -48,6 +48,7 @@ export const getUser = async (req, res) => {
 export const updateUser = async (req, res) => {
   const newdata = req.body;
   const uid = res.locals.uid;
+  const user = await UserModel.findOne({uid});
   delete newdata.uid;
   delete newdata.roles;
   console.log(uid, "Dang update....");
@@ -63,34 +64,30 @@ export const updateUser = async (req, res) => {
     // Nếu chuỗi dateOfBirth có thể chuyển đổi thành định dạng thời gian
     // Thì chuyển đổi nó và gán vào temporaryData
     newdata.dateOfBirth = new Date(newdata.dateOfBirth);
-    console.log("da convet thanh cong");
+    
   }else{
-    console.log("convert k thanh cong");
+    return res.status(404).json({ message: "The date entered must be valid" });
   }
   const temporaryData = {
-    userName: newdata.userName,
-    address: newdata.address,
-    phoneNumber: newdata.phoneNumber,
-    "cID.fullName": newdata.fullName,
-    "cID.no": newdata.no,
-    "cID.sex": newdata.sex,
-    "cID.placeOfOrigin": newdata.placeOfOrigin,
-    "cID.dateOfBirth": newdata.dateOfBirth,
-    "cID.placeOfResidence": newdata.placeOfResidence,
-    avatar: newdata.avatar
+    userName: newdata.userName !== '' ? newdata.userName : user.userName,
+    address: newdata.address !== '' ? newdata.address : user.address,
+    phoneNumber: newdata.phoneNumber !== '' ? newdata.phoneNumber : user.phoneNumber,
+    "cID.fullName": newdata.fullName !== '' ? newdata.fullName : user.cID.fullName,
+    "cID.no": newdata.no !== '' ? newdata.no : user.cID.no,
+    "cID.sex": newdata.sex !== '' ? newdata.sex : user.cID.sex,
+    "cID.placeOfOrigin": newdata.placeOfOrigin !== '' ? newdata.placeOfOrigin : user.cID.placeOfOrigin,
+    "cID.dateOfBirth": newdata.dateOfBirth !== '' ? newdata.dateOfBirth : user.cID.dateOfBirth,
+    "cID.placeOfResidence": newdata.placeOfResidence !== '' ? newdata.placeOfResidence : user.cID.placeOfResidence,
+    avatar: newdata.avatar !== '' ? newdata.avatar : user.avatar
   };
   
-  // Lọc bỏ các trường có giá trị là null hoặc undefined
-  const filteredData = Object.fromEntries(
-    Object.entries(temporaryData).filter(([key, value]) => value !== null && value !== undefined)
-  );
-  console.log(filteredData);
+  
   // phải khoá rolers ở cái này.
   try {
     const user = await UserModel.findOneAndUpdate(
       { uid }, //Sử dụng uid làm điều kiện tìm kiếm
       {
-        $set: filteredData,
+        $set: temporaryData,
       },
       { new: true }
     );
@@ -187,6 +184,13 @@ function isValidDate(dateString) {
     return false;
   }
 
-  const date = new Date(dateString);
-  return !isNaN(date);
+  const inputDate = new Date(dateString);
+  const currentDate = new Date();
+
+  // Kiểm tra nếu ngày nhập vào lớn hơn ngày hiện tại
+  if (inputDate > currentDate) {
+    return false;
+  }
+
+  return !isNaN(inputDate);
 }
